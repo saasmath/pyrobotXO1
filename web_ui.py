@@ -133,8 +133,10 @@ class RoombaWebController(object):
 def main():
   controller = RoombaWebController()
   controller.ResetRoomba()
+  """
   controller.StartWebcam()
   controller.StartMicrophone()
+  """
   web.webapi.internalerror = web.debugerror
   urls = ('/(.*)', 'controller')
   web.run(urls, locals())

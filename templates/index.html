@@ -51,13 +51,15 @@
         MochiKit.Async.callLater(2, updateWebcam);
       }
 
-      MochiKit.Signal.connect(window, 'onload', updateWebcam);
+     // MochiKit.Signal.connect(window, 'onload', updateWebcam);
     </script>
   </head>
   <body>
-    <img id="webcam" src="/static/webcam.png">
-    <br>
-    <a href="/static/sound.ogg">Listen</a> |
+  <script>
+    //<img id="webcam" src="/static/webcam.png">
+   // <br>
+   // <a href="/static/sound.ogg">Listen</a> |
+    </script>
     <a href="#"
       onclick="javascript:MochiKit.Async.loadJSONDoc('/forward');
         return false;">Forward</a> |
