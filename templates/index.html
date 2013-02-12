@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>PyRobot Web UI</title>
+    <style type="text/css">
+      table.sensors { font-size: small; border: 0px; width: 30em; }
+      table.sensors th { border: 0px; border-bottom: 1px solid #aaaaaa; }
+      table.sensors td { border: 0px; }
+      table.sensors th, table.sensors td { padding: 3px; }
+    </style>
+    <script type="text/javascript" src="/static/MochiKit/MochiKit.js"></script>
+    <script type="text/javascript">
+      buildTableFromObj = function(obj) {
+        var rows = [];
+        for (attr in obj) {
+          rows.push([attr, obj[attr]]);
+        }
+        row_display = function (row) {
+          return TR(null, map(partial(TD, null), row));
+        }
+        var newTable = TABLE({'id': 'sensors', 'class': 'sensors'},
+          TH(null, 'Sensor'),
+          TH(null, 'Value'),
+          TBODY(null, map(row_display, rows)));
+        return newTable
+      }
+
+      updateSensorData = function() {
+        var url = '/sensors';
+        var d = MochiKit.Async.loadJSONDoc(url);
+        d.addCallback(function(r) {
+          new_sensor_table = buildTableFromObj(r);
+          sensor_table = getElement('sensors');
+          if (!sensor_table) {
+            doc = currentDocument();
+            MochiKit.DOM.appendChildNodes(doc.body, new_sensor_table);
+          } else {
+            swapDom(sensor_table, new_sensor_table);
+          }
+        });
+        MochiKit.Async.callLater(5, updateSensorData);
+      }
+      
+      MochiKit.Signal.connect(window, 'onload', updateSensorData);
+
+      updateWebcam = function() {
+        var now = new Date();
+        webcam_img = getElement('webcam');
+        webcam_img.src = '/static/webcam.png?' + now.getTime();
+        MochiKit.Async.callLater(2, updateWebcam);
+      }
+
+      MochiKit.Signal.connect(window, 'onload', updateWebcam);
+    </script>
+  </head>
+  <body>
+    <img id="webcam" src="/static/webcam.png">
+    <br>
+    <a href="/static/sound.ogg">Listen</a> |
+    <a href="#"
+      onclick="javascript:MochiKit.Async.loadJSONDoc('/forward');
+        return false;">Forward</a> |
+    <a href="#"
+       onclick="javascript:MochiKit.Async.loadJSONDoc('/reverse');
+         return false;">Reverse</a> |
+    <a href="#"
+       onclick="javascript:MochiKit.Async.loadJSONDoc('/left');
+         return false;">Left</a> |
+    <a href="#"
+       onclick="javascript:MochiKit.Async.loadJSONDoc('/right');
+         return false;">Right</a> |
+    <a href="#"
+       onclick="javascript:MochiKit.Async.loadJSONDoc('/dock');
+         return false;">Dock</a> |
+    <a href="#"
+       onclick="javascript:MochiKit.Async.loadJSONDoc('/reset');
+         return false;">Reset</a>
+    <br><br>
+  </body>
+</html>
